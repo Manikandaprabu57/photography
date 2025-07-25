@@ -3,56 +3,61 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>My Single Page</title>
-  <style>
-    body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      margin: 0;
-      padding: 0;
-      background: #f4f4f4;
-      color: #333;
-    }
-
-    .container {
-      max-width: 800px;
-      margin: 100px auto;
-      text-align: center;
-      background: #fff;
-      padding: 40px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-      border-radius: 10px;
-    }
-
-    h1 {
-      font-size: 2.5rem;
-      margin-bottom: 20px;
-    }
-
-    p {
-      font-size: 1.2rem;
-      margin-bottom: 30px;
-    }
-
-    a.button {
-      display: inline-block;
-      padding: 10px 20px;
-      background: #007bff;
-      color: white;
-      text-decoration: none;
-      border-radius: 5px;
-      transition: background 0.3s;
-    }
-
-    a.button:hover {
-      background: #0056b3;
-    }
-  </style>
+  <title>Event Registration</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
 </head>
 <body>
   <div class="container">
-    <h1>Welcome to My Page</h1>
-    <p>This is a simple single-page website using just HTML and CSS.</p>
-    <a href="https://example.com" class="button">Learn More</a>
+    <h1>🎉 Life Event Registration</h1>
+    <p>Let’s make your celebration memorable! Fill in your details below</p>
+
+    <form id="userForm">
+      <label for="name">Name <span>*</span></label>
+      <input type="text" id="name" name="name" required />
+
+      <label for="phone">Phone Number <span>*</span></label>
+      <input type="tel" id="phone" name="phone" required />
+
+      <label for="photo">Upload Your Photo <span>*</span></label>
+      <input type="file" id="photo" name="photo" accept="image/*" required />
+
+      <button type="submit" class="button">Submit</button>
+    </form>
+
+    <div id="successMessage" class="hidden">
+      <h2>✅ Registered Successfully!</h2>
+      <p>We received your details. Your celebration photo will arrive soon!</p>
+    </div>
   </div>
+
+  <script>
+    const form = document.getElementById('userForm');
+    const successMessage = document.getElementById('successMessage');
+
+    form.addEventListener('submit', async function(e) {
+      e.preventDefault();
+
+      const formData = new FormData(form);
+
+      try {
+        const res = await fetch('/submit', {
+          method: 'POST',
+          body: formData
+        });
+
+        if (res.ok) {
+          form.style.display = 'none';
+          successMessage.classList.remove('hidden');
+        } else {
+          const data = await res.json();
+          alert(data.error || 'Something went wrong!');
+        }
+      } catch (err) {
+        alert('Network error');
+        console.error(err);
+      }
+    });
+  </script>
 </body>
 </html>
